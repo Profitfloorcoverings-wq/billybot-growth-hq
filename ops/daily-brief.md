@@ -1,22 +1,17 @@
 # Daily Brief (BillyBot)
 
 ## Today’s focus
-- Build + refine the next outbound batch (UK flooring).
-- Improve activation: user reaches **10 quotes** quickly.
+- UK flooring outreach: get 3–5 demos booked.
+- Product goal: user hits **10 quotes free** quickly; paywall after.
 
-## Metrics snapshot (manual for now)
-- New leads added: 0
-- Draft emails ready: 0
-- Replies to handle: 0
-- Demos booked: 0
-- Activated users (>=1 quote): 0
-- Paying customers: 0
+## Snapshot
+- Leads in list: **250**
+- Draft emails ready (queue): **20**
 
-## Inbox / replies
-Paste replies into `leads/replies.csv` and tag status.
+## What you should do now
+1) Open the web app: https://billybot-growth-hq.vercel.app/
+2) Review the 20 drafted emails in **Queue to send**
+3) Tell me any edits (tone/offer), then type **send batch** when ready.
 
-## Next batch (awaiting approval)
-See: `leads/queue-to-send.csv`
-
-## Notes / blockers
--
+## Notes
+- These drafts are only for leads that already have an email on record. Next step is enriching more emails.
