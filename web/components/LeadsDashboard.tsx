@@ -42,6 +42,8 @@ export default function LeadsDashboard() {
   const [queueCsv, setQueueCsv] = useState<string>("");
   const [leadsCsv, setLeadsCsv] = useState<string>("");
   const [err, setErr] = useState<string | null>(null);
+  const [selectedDraft, setSelectedDraft] = useState<QueueRow | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -114,6 +116,7 @@ export default function LeadsDashboard() {
                   <th className="py-2 pr-4">Email</th>
                   <th className="py-2 pr-4">Subject</th>
                   <th className="py-2 pr-4">Status</th>
+                  <th className="py-2 pr-2">View</th>
                 </tr>
               </thead>
               <tbody>
@@ -123,11 +126,22 @@ export default function LeadsDashboard() {
                     <td className="py-2 pr-4">{r.email}</td>
                     <td className="py-2 pr-4">{r.subject}</td>
                     <td className="py-2 pr-4">{r.status}</td>
+                    <td className="py-2 pr-2">
+                      <button
+                        className="rounded-md border px-2 py-1 text-xs hover:bg-gray-50"
+                        onClick={() => {
+                          setSelectedDraft(r);
+                          setCopied(null);
+                        }}
+                      >
+                        View
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {queueRows.length === 0 ? (
                   <tr>
-                    <td className="py-3 text-gray-500" colSpan={4}>
+                    <td className="py-3 text-gray-500" colSpan={5}>
                       Queue is empty.
                     </td>
                   </tr>
@@ -137,6 +151,71 @@ export default function LeadsDashboard() {
           </div>
           {queueRows.length > 25 ? (
             <div className="mt-3 text-xs text-gray-500">Showing first 25 rows.</div>
+          ) : null}
+
+          {selectedDraft ? (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+              onClick={() => setSelectedDraft(null)}
+            >
+              <div
+                className="w-full max-w-2xl rounded-xl bg-white shadow-xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-start justify-between gap-3 border-b p-4">
+                  <div>
+                    <div className="text-sm text-gray-600">Draft email</div>
+                    <div className="text-lg font-semibold">{selectedDraft.business_name}</div>
+                    <div className="mt-1 text-xs text-gray-600">{selectedDraft.email}</div>
+                  </div>
+                  <button
+                    className="rounded-md border px-2 py-1 text-sm hover:bg-gray-50"
+                    onClick={() => setSelectedDraft(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+
+                <div className="p-4 space-y-4">
+                  <div>
+                    <div className="text-xs font-medium text-gray-600">Subject</div>
+                    <div className="mt-1 rounded-lg bg-gray-50 p-3 text-sm">{selectedDraft.subject}</div>
+                  </div>
+
+                  <div>
+                    <div className="text-xs font-medium text-gray-600">Body</div>
+                    <pre className="mt-1 whitespace-pre-wrap rounded-lg bg-gray-50 p-3 text-sm leading-6">
+                      {selectedDraft.body}
+                    </pre>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50"
+                      onClick={async () => {
+                        const text = `Subject: ${selectedDraft.subject}\n\n${selectedDraft.body ?? ""}`;
+                        await navigator.clipboard.writeText(text);
+                        setCopied("Copied subject+body");
+                        setTimeout(() => setCopied(null), 1200);
+                      }}
+                    >
+                      Copy subject + body
+                    </button>
+                    <button
+                      className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50"
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(selectedDraft.email ?? "");
+                        setCopied("Copied email");
+                        setTimeout(() => setCopied(null), 1200);
+                      }}
+                    >
+                      Copy email
+                    </button>
+                    {copied ? <div className="self-center text-xs text-green-700">{copied}</div> : null}
+                  </div>
+                </div>
+              </div>
+            </div>
           ) : null}
         </Card>
       </div>
